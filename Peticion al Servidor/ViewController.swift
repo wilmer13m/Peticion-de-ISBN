@@ -12,8 +12,11 @@ class ViewController: UIViewController, UITextFieldDelegate {
 
     @IBOutlet weak var isbnTextField: UITextField!
     
-    @IBOutlet weak var peticionTextView: UITextView!
+    @IBOutlet weak var labelTitulo: UILabel!
     
+    @IBOutlet weak var labelAutor: UILabel!
+    
+    @IBOutlet weak var labelPortada: UILabel!
     var isbn = String()
     
     override func viewDidLoad() {
@@ -77,19 +80,46 @@ class ViewController: UIViewController, UITextFieldDelegate {
             do{
                 
                 //parseando la data del json
-                if let json = try NSJSONSerialization.JSONObjectWithData(data!, options:[]) as? [String: AnyObject] {
+                let json = try NSJSONSerialization.JSONObjectWithData(data!, options:.MutableContainers)
                     
-                   print(json)
+                 let dic1 = json as! NSDictionary
+                 let dic2 = dic1["ISBN:\(id)"] as! NSDictionary
+                 let dic3 = dic2["title"] as! NSString as String
+                
+                 let dic4 = dic2["authors"] as! NSArray
+        
+                 for x in dic4 {
+                    
+                   let name = x["name"] as! String
+                    print("este es x \(name)")
+                    
+                    self.labelAutor.text = name
+
+                }
+                
+                 self.labelPortada.text = "no hay portada"
+                
+                
+                
+                if let dic4 = dic2["cover"]{
+                
+                    self.labelPortada.text = dic4 as? String
                     
                     
+                    
+                }
+                
+                
+        
                 
                     //recargo la data del collectionView de manera asincrona
                     dispatch_async(dispatch_get_main_queue(), {
-                        self.peticionTextView.text = String(json)
+                        self.labelTitulo.text = dic3
+
                     })
                 
                 
-                }
+                
                 
                 
                 
